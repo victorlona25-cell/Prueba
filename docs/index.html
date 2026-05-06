@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WebTrade CRM</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#060d1a;color:#c5d0e8;font-family:'Courier New',monospace}.app{height:100vh;display:flex;flex-direction:column}.top{background:#0b1525;border-bottom:1px solid #1a2840;padding:10px 14px;display:flex;justify-content:space-between;align-items:center}.btn{background:transparent;border:1px solid #1a2840;color:#3d546e;padding:6px 10px;cursor:pointer}.green{border-color:#00d4a0;color:#00d4a0}.red{border-color:#f05e5e;color:#f05e5e}.blue{border-color:#63b3ed;color:#63b3ed}.yellow{border-color:#f6ad55;color:#f6ad55}.login{height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at top,#0b1f35,#050b16 70%)}.card,.panel{background:#08111e;border:1px solid #1a2840;padding:18px}.input{width:100%;background:#0d1a2a;border:1px solid #1a2840;color:#c5d0e8;padding:9px}.main{flex:1;display:flex;overflow:hidden}.side{width:230px;background:#050b16;border-right:1px solid #1a2840;overflow:auto}.item{padding:11px;border-bottom:1px solid #0d1525;cursor:pointer;color:#5a6e8a}.item.active{background:#0c1e35;color:#63b3ed}.content{flex:1;padding:15px;overflow:auto}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}.metric{text-align:center}.metric small{display:block;color:#5a6e8a}.warn{background:#1f1606;border:1px solid #f6ad55;color:#f6ad55;padding:10px}.error{background:#2a0d0d;border:1px solid #f05e5e;color:#f05e5e;padding:8px;margin:8px 0}
+  </style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const app=document.getElementById('app');
+let page='login', role='', user='', currentModule='Dashboard', selectedAsset='EUR/USD';
+const modules=['Dashboard','Clientes','Cuentas trading','Depósitos','Retiros','Créditos / Bonos','Operaciones','CRM','Riesgo','Reportes','Configuración','Usuarios admin','Auditoría'];
+const assets=['EUR/USD','GBP/USD','USD/JPY','XAU/USD','BTC/USD','US30','NAS100','AAPL','TSLA'];
+function go(p){page=p;render()}
+function doLogin(){const u=document.getElementById('u').value.trim();const p=document.getElementById('p').value.trim();if(u==='admin'&&p==='123456'){role='admin';go('admin');return}if(u==='cliente'&&p==='123456'){role='cliente';go('trade');return}document.getElementById('err').innerText='Credenciales incorrectas o vacías.'}
+function renderLogin(){app.innerHTML=`<div class="login"><div class="card" style="width:390px"><h2 style="color:#00d4a0;text-align:center">FOREX ACCESS</h2><p style="text-align:center;color:#5a6e8a">WebTrade + CRM</p><input id="u" class="input" placeholder="Usuario"><br><br><input id="p" class="input" type="password" placeholder="Contraseña"><div id="err" class="error" style="display:block;min-height:32px"></div><button class="btn green" style="width:100%;padding:12px" onclick="doLogin()">ENTRAR</button><p style="font-size:11px;color:#5a6e8a;text-align:center">Admin: admin / 123456 · Cliente: cliente / 123456</p><p style="font-size:10px;color:#5a6e8a;text-align:center">El trading conlleva riesgo. Puedes perder todo tu capital.</p></div></div>`}
+function renderAdmin(){app.innerHTML=`<div class="app"><div class="top"><div><b style="color:#00d4a0">ADMIN CRM</b><br><button class="btn red" onclick="go('login')">CERRAR SESIÓN</button></div><b>${currentModule}</b></div><div class="main"><div class="side">${modules.map(m=>`<div class="item ${m===currentModule?'active':''}" onclick="currentModule='${m}';render()">${m}</div>`).join('')}</div><div class="content"><div class="panel"><h2 style="color:#63b3ed">${currentModule}</h2><div class="grid"><div class="panel">Crear / editar registros</div><div class="panel">Estados y validaciones</div><div class="panel">Historial de actividad</div><div class="panel">Auditoría futura</div></div></div>${currentModule==='Clientes'?'<div class="panel" style="margin-top:12px"><h3>Cliente Demo</h3><p>Usuario: cliente</p><p>Estado: Activo</p><p>KYC: Pendiente</p><p>Asesor: Víctor</p></div>':''}</div></div></div>`}
+function renderTrade(){app.innerHTML=`<div class="app"><div class="top"><div><b style="color:#00d4a0">WEBTRADE</b><br><button class="btn red" onclick="go('login')">CERRAR SESIÓN</button></div><div>${['Balance','Equity','Margin','Free Margin','P&L'].map((m,i)=>`<span class="metric" style="display:inline-block;margin:0 10px"><small>${m}</small><b>$${i===0||i===1||i===3?'1250.00':'0.00'}</b></span>`).join('')}</div></div><div class="main"><div class="side">${assets.map(a=>`<div class="item ${a===selectedAsset?'active':''}" onclick="selectedAsset='${a}';render()">${a}</div>`).join('')}</div><div class="content"><div class="panel"><h2>${selectedAsset}</h2><h1 style="color:#63b3ed">Gráfica simulada</h1><p>Base funcional publicada en GitHub Pages.</p></div></div><div class="side" style="border-left:1px solid #1a2840;border-right:none"><div class="panel"><h3>Nueva orden</h3><button class="btn green">BUY</button> <button class="btn red">SELL</button><br><br><input class="input" value="0.01"><br><br><button class="btn blue" style="width:100%">EJECUTAR</button></div></div></div></div>`}
+function render(){if(page==='login')renderLogin();else if(page==='admin')renderAdmin();else renderTrade()}
+render();
+</script>
+</body>
+</html>
